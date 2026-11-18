@@ -1,0 +1,25 @@
+# ==============================================================================
+# UGTO SURAJ — Apache / cPanel Redirection & Security Rules
+# Redirects any unknown endpoint (e.g. /veserv, /ppp) back to https://ugtosuraj.com/
+# ==============================================================================
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Enforce HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # 2. Allow existing static assets (css, js, images, svg, icons) to load normally
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 3. Redirect all other endpoints/paths back to root homepage (301 Permanent Redirect)
+  RewriteRule ^(.*)$ / [R=301,L]
+</IfModule>
+
+# 4. Fallback 404 Error Document
+ErrorDocument 404 /404.html
+

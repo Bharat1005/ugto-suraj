@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "redirects": [
+    {
+      "source": "/((?!assets/|css/|js/|404.html|favicon.ico|robots.txt).*)",
+      "destination": "/",
+      "permanent": false
+    }
+  ]
+}
+

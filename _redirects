@@ -1,0 +1,5 @@
+# Netlify / Cloudflare Pages Redirects
+# Existing files (css, js, assets) are served automatically.
+# Any other endpoint (e.g. /veserv, /ppp) redirects to root https://ugtosuraj.com/
+/*    /    301
+
