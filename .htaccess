@@ -1,25 +1,32 @@
 # ==============================================================================
-# UGTO SURAJ — Apache / cPanel Redirection & Security Rules
-# Redirects any unknown endpoint (e.g. /veserv, /ppp) back to https://ugtosuraj.com/
+# UGTO SURAJ — Clean Apache / cPanel Redirection (No Redirect Loops)
 # ==============================================================================
+
+DirectoryIndex index.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # 1. Enforce HTTPS
+  # 1. Cloudflare / Reverse-Proxy Safe HTTPS Redirect (Avoids Flexible SSL Loops)
   RewriteCond %{HTTPS} off
-  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteCond %{HTTP:CF-Visitor} !'"scheme":"https"'
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
-  # 2. Allow existing static assets (css, js, images, svg, icons) to load normally
+  # 2. NEVER redirect root "/" or "index.html"
+  RewriteRule ^$ index.html [L]
+  RewriteRule ^index\.html$ - [L]
+
+  # 3. Allow real files and directories (assets, css, js, images) to load directly
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # 3. Redirect all other endpoints/paths back to root homepage (301 Permanent Redirect)
-  RewriteRule ^(.*)$ / [R=301,L]
+  # 4. Redirect any other subpaths (e.g. /veserv, /ppp) back to homepage
+  RewriteCond %{REQUEST_URI} !^/?$
+  RewriteRule ^.+/?$ https://%{HTTP_HOST}/ [R=301,L]
 </IfModule>
 
-# 4. Fallback 404 Error Document
-ErrorDocument 404 /404.html
-
+# Fallback: Serve index.html on 404 errors
+ErrorDocument 404 /index.html

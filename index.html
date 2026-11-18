@@ -17,6 +17,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+  <script>
+    // Cleanly normalize any subpath back to "/" without triggering network redirect loops
+    if (window.location.pathname !== '/' && window.location.pathname !== '/index.html') {
+      window.history.replaceState(null, '', '/');
+    }
+  </script>
+
   <!-- Primary Meta Tags -->
   <title>UGTO SURAJ — Rooted in Culture. Designed for Today.</title>
   <meta name="title" content="UGTO SURAJ — Rooted in Culture. Designed for Today.">
